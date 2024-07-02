@@ -30,6 +30,50 @@ Deprecated Gradle features were used in this build, making it incompatible with 
 <https://developer.android.com/studio/publish/app-signing#sign-apk>
 <https://docs.flutter.dev/deployment/android>
 
+## Boilerplate Features:
+
+* Onboarding (intro, name, image wallet)
+* Wallet (home, chart, info)
+* Routing
+* Theme
+* Dio
+* Database
+* MobX (to connect the reactive data of your application with the UI)
+* Bloc cubit (State Management)
+* Encryption
+* Validation
+* Code Generation
+* User Notifications
+* Logging
+* Dependency Injection
+* Dark Theme Support (new)
+* Multilingual Support (new)
+
+### Libraries & Tools Used
+
+* [Dio](https://github.com/flutterchina/dio)
+* [Database](https://github.com/tekartik/sembast.dart)
+* [MobX](https://github.com/mobxjs/mobx.dart) (to connect the reactive data of your application with the UI)
+* [Flutter Bloc]([https://github.com/rrousselGit/provider](https://pub.dev/packages/flutter_bloc)) (State Management)
+* [Encryption](https://github.com/xxtea/xxtea-dart)
+* [Validation](https://github.com/dart-league/validators)
+* [Logging](https://github.com/zubairehman/Flogs)
+* [Notifications](https://github.com/AndreHaueisen/flushbar)
+* [Json Serialization](https://github.com/dart-lang/json_serializable)
+* [Dependency Injection](https://github.com/fluttercommunity/get_it)
+
+### Folder Structure
+Here is the core folder structure which flutter provides.
+
+```
+flutter-app/
+|- android
+|- build
+|- ios
+|- lib
+|- test
+```
+
 ### Struture
 
     .
@@ -139,3 +183,143 @@ Deprecated Gradle features were used in this build, making it incompatible with 
     |   └── main_dev.dart
     |   └── main_stg.dart
     |   └── main_prod.dart
+
+### Routes
+
+This file contains all the routes for your application.
+
+```dart
+import 'package:flutter/material.dart';
+
+import 'ui/post/post_list.dart';
+import 'ui/login/login.dart';
+import 'ui/splash/splash.dart';
+
+const String loginPagePath = '/login-page';
+const String dashBoardPath = '/dashboard';
+
+enum Pages {
+  loginPage,
+  dashBoard,
+}
+
+abstract class PageConfiguration {
+  final String key;
+  final String path;
+  final Pages uiPage;
+  var history = <PageConfiguration>[];
+  get location => path;
+
+  PageConfiguration({
+    required this.key,
+    required this.path,
+    required this.uiPage,
+  });
+
+  factory PageConfiguration.fromLocation(String location) {
+    location = Uri.decodeFull(location);
+    final parsedUri = Uri.parse(location);
+    final pathSegments = parsedUri.pathSegments;
+    if (pathSegments.isEmpty) {
+      return LoginPageConfiguration.fromLocation(location);
+    }
+
+    final path = pathSegments[0];
+
+    print('path:$path');
+    print(pathSegments);
+
+    switch (path) {
+      case loginPagePath:
+        return LoginPageConfiguration.fromLocation(location);
+      default:
+        return DashBoardPageConfiguration.fromLocation(location);
+    }
+  }
+
+  List<PageConfiguration> get pageTree => history;
+}
+```
+
+```dart
+
+Future<void> runMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await appInitialized();
+
+  Application application = Application();
+  await application.setup();
+
+  /// Create core models & services
+  MainAppState mainAppState =
+      MainAppState(userRepository: application.userRepository);
+  MainLoginState mainLoginState = MainLoginState();
+
+  NetworkState networkState = NetworkState();
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://example@sentry.io/add-your-dsn-here';
+    },
+    appRunner: () => runApp(
+      MultiProvider(
+        providers: [
+          Provider.value(value: application.userRepository),
+          BlocProvider<LoginCubit>.value(
+            value: LoginCubit(),
+          ),
+          ChangeNotifierProvider.value(value: mainAppState),
+          ChangeNotifierProvider.value(value: mainLoginState),
+          ChangeNotifierProvider.value(value: networkState)
+        ],
+        child: _AppBootstrapper(),
+      ),
+    ),
+  );
+}
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
+class _AppBootstrapper extends StatefulWidget {
+  @override
+  _AppBootstrapperState createState() => _AppBootstrapperState();
+}
+
+class _AppBootstrapperState extends State<_AppBootstrapper> {
+  AppRouteParser routeParser = AppRouteParser();
+  late AppRouterDelegate router;
+
+  @override
+  void initState() {
+    router = AppRouterDelegate(context.read<MainAppState>());
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    scheduleMicrotask(() {
+      BootstrapCommand().run(context);
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routeInformationParser: routeParser,
+      routerDelegate: router,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.dark(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.dark,
+      supportedLocales: const [
+        Locale('en', 'US'),
+      ],
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+    );
+  }
+}
+
+```
