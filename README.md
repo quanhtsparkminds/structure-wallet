@@ -54,7 +54,7 @@ Deprecated Gradle features were used in this build, making it incompatible with 
 * [Dio](https://github.com/flutterchina/dio)
 * [Database](https://github.com/tekartik/sembast.dart)
 * [MobX](https://github.com/mobxjs/mobx.dart) (to connect the reactive data of your application with the UI)
-* [Flutter Bloc]([https://github.com/rrousselGit/provider](https://pub.dev/packages/flutter_bloc)) (State Management)
+* [Flutter_Bloc]([https://github.com/rrousselGit/provider](https://pub.dev/packages/flutter_bloc)) (State Management)
 * [Encryption](https://github.com/xxtea/xxtea-dart)
 * [Validation](https://github.com/dart-league/validators)
 * [Logging](https://github.com/zubairehman/Flogs)
