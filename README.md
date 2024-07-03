@@ -44,20 +44,19 @@ Deprecated Gradle features were used in this build, making it incompatible with 
 * Validation
 * Code Generation
 * User Notifications
-* Logging
 * Dependency Injection
-* Dark Theme Support (new)
-* Multilingual Support (new)
+* Dark Theme Support 
+* Multil language
+* Flavor (dev, stg, prod)
+* Common widgets
 
 ### Libraries & Tools Used
 
 * [Dio](https://github.com/flutterchina/dio)
-* [Database](https://github.com/tekartik/sembast.dart)
 * [MobX](https://github.com/mobxjs/mobx.dart) (to connect the reactive data of your application with the UI)
 * [Flutter_Bloc](https://pub.dev/packages/flutter_bloc) (State Management)
 * [Encryption](https://github.com/xxtea/xxtea-dart)
 * [Validation](https://github.com/dart-league/validators)
-* [Logging](https://github.com/zubairehman/Flogs)
 * [Notifications](https://github.com/AndreHaueisen/flushbar)
 * [Json Serialization](https://github.com/dart-lang/json_serializable)
 * [Dependency Injection](https://github.com/fluttercommunity/get_it)
@@ -184,6 +183,18 @@ flutter-app/
     |   └── main_stg.dart
     |   └── main_prod.dart
 
+```
+1- constants - All the application level constants are defined in this directory with-in their respective files. This directory contains the constants for `theme`, `dimentions`, `api endpoints`, `preferences` and `strings`.
+2- data - Contains the data layer of your project, includes directories for local, network and shared pref/cache.
+3- stores - Contains store(s) for state-management of your application, to connect the reactive data of your application with the UI. 
+4- feature — Contains all the ui, bloc, state, event of your project, contains sub directory for each screen.
+5- util — Contains the utilities/common functions of your application.
+6- widgets — Contains the common widgets for your applications. For example, Button, TextField etc.
+7- routes.dart — This file contains all the routes for your application.
+8- main.dart - This is the starting point of the application. All the application level configurations are defined in this file i.e, theme, routes, title, orientation.
+```
+
+
 ### Routes
 
 This file contains all the routes for your application.
@@ -240,9 +251,10 @@ abstract class PageConfiguration {
   List<PageConfiguration> get pageTree => history;
 }
 ```
+### Main
+This is the starting point of the application. All the application level configurations are defined in this file i.e, theme, routes, title, orientation etc.
 
 ```dart
-
 Future<void> runMain() async {
   WidgetsFlutterBinding.ensureInitialized();
 
