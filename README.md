@@ -48,7 +48,7 @@ Deprecated Gradle features were used in this build, making it incompatible with 
 * Dark Theme Support 
 * Multil language
 * Flavor (dev, stg, prod)
-* Common widgets
+* Common widgets (button, input text, droplist, chart(new), item) 
 
 ### Libraries & Tools Used
 
